@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>PGPortal</title>
+    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
+</head>
+
+<body>
+    <H2>PGPortal</H2>
+    <p>PGP messages made simple!</p>
+    <p>Enter your message in the box below!</p>
+    <input id="msgInput" type="text" placeholder="Message...">
+    <button type="submit" onclick="encryptMsg()">Send</button>
+</body>
+
+<footer>
+    <p>Made with love and code by gortbrown!</p>
+    <p>Utilizes the following awesome open source projects: <a href="https://openpgpjs.org/">OpenPGP.js</a>, <a href="https:///">SmtpJs</a>, <a href="https://simplecss.org/">SimpleCSS</a></p>
+</footer>
+
+<script src="openpgp.min.js"></script>
+<script src="https://smtpjs.com/v3/smtp.js"></script>
+<script>
+    async function encryptMsg(){
+        const keyArmored = ``; //Your PGP Public Key
+
+        var input = document.getElementById("msgInput").value;
+        const pubkey = await openpgp.readKey({ armoredKey: keyArmored });
+        const message = await openpgp.createMessage({ text: input });
+        const encrypted = await openpgp.encrypt({
+            message,
+            encryptionKeys: pubkey
+        });
+        console.log(encrypted);
+        Email.send({
+            SecureToken: "", //The secure token
+            To : '', //The email to send to
+            From : "", //The "from" email address. Should match username from Elastic Email
+            Subject : "", //Put whatever subject you want
+            Body : encrypted //The encrypted message
+        }).then(
+            message => alert(message)
+        );
+        
+    }
+</script>
+
+</html>
