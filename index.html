@@ -5,13 +5,40 @@
     <title>PGPortal</title>
     <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
 </head>
-
 <body>
     <H2>PGPortal</H2>
     <p>PGP messages made simple!</p>
+    <h3>What is this?</h3>
+    <p>To put it simply, PGP is a way to secure emails and other files so that only certain people can see it. This is done by encrypting the message, or scrambling the message so only someone with the key can unscramble it.</p>
+    <p>A key is basically a file that allows only you and the person you are talking with to encrypt or decrypt the message. PGP uses two keys: one to scramble the message (public key) and one to unscramble it (private key.) Users share their public keys with eachother so they can encrypt the message, and it can only be decrypted by the private key. For example, if you want to send an email to Alice, you would get their public key, and encrypt the message. Then, they would be able to decrypt it with their private key. When Alice replies, they use your public key to encrypt, and you use your private key to decrypt.</p>
+    <p>How do you encrypt and decrypt? To make it easy, I included some tools to help you do just that below!</p>
+    <h3>Keys</h3>
+    <p>A public and private key has been generated for you! If you have some already that you want to use instead, add them here!</p>
+    <h4>Public Key</h4>
+    <p>Download this and send it to the recipient</p>
+    <button type="button" onclick="downloadPub()">Download</button>
+    <h5>Upload if you have one</h5>
+    <input type="file" id="pubkey">
+    <h4>Private Key</h4>
+    <p>You should never share this! But you should download it for future use! <b>The key will reset if you refresh, so download it so you can decrypt your messages!</b></p>
+    <button type="button" onclick="downloadPriv()">Download</button>
+    <h5>Upload if you have one</h5>
+    <input type="file" id="privkey">
+    <h4>Recipient Public Key</h4>
+    <p>Upload the recipient's public key here</p>
+    <input type="file" id="pubkeyRec">
+    <h3>Encrypt Message</h3>
     <p>Enter your message in the box below!</p>
-    <input id="msgInput" type="text" placeholder="Message...">
-    <button type="submit" onclick="encryptMsg()">Send</button>
+    <textarea id="msgInputEncrypt" placeholder="Message..."></textarea>
+    <button type="submit" onclick="encryptMsg()">Encrypt</button>
+    <p>Here is your encrypted message. Copy the entire thing!</p>
+    <textarea id="resultBoxEncrypt" placeholder="result" readonly="true"></textarea>
+    <h3>Decrypt Message</h3>
+    <p>Enter your encrypted message in the box below!</p>
+    <textarea id="msgInputDecrypt" placeholder="Message..."></textarea>
+    <button type="submit" onclick="encryptMsg()">Decrypt</button>
+    <p>Here is your decrypted message!</p>
+    <textarea id="resultBoxDecrypt" placeholder="result" readonly="true"></textarea>
 </body>
 
 <footer>
@@ -20,7 +47,6 @@
 </footer>
 
 <script src="openpgp.min.js"></script>
-<script src="https://smtpjs.com/v3/smtp.js"></script>
 <script>
     async function encryptMsg(){
         const keyArmored = ``; //Your PGP Public Key
@@ -33,16 +59,6 @@
             encryptionKeys: pubkey
         });
         console.log(encrypted);
-        Email.send({
-            SecureToken: "", //The secure token
-            To : '', //The email to send to
-            From : "", //The "from" email address. Should match username from Elastic Email
-            Subject : "", //Put whatever subject you want
-            Body : encrypted //The encrypted message
-        }).then(
-            message => alert(message)
-        );
-        
     }
 </script>
 
